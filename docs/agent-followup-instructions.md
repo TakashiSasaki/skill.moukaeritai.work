@@ -248,7 +248,7 @@ https://github.com/TakashiSasaki/skill.moukaeritai.work.git
 The root README should no longer use:
 
 ```text
-https://github.com/YOUR-ORG/YOUR-REPO.git
+https://github.com/TakashiSasaki/skill.moukaeritai.work.git
 ```
 
 For the MIT license, replace placeholder holder text with:

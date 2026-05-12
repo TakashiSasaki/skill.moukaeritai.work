@@ -17,7 +17,7 @@ Downstream users should import the generated `dist/skills/<name>` branches as Gi
 
 ```bash
 git submodule add -b dist/skills/document-record-authoring \
-  https://github.com/TakashiSasaki/YOUR-REPO.git \
+  https://github.com/TakashiSasaki/skill.moukaeritai.work.git \
   .agents/skills/document-record-authoring
 ```
 

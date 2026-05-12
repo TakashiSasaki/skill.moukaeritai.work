@@ -112,11 +112,11 @@ Include this example command:
 
 ```bash
 git submodule add -b dist/skills/document-record-authoring \
-  https://github.com/YOUR-ORG/YOUR-REPO.git \
+  https://github.com/TakashiSasaki/skill.moukaeritai.work.git \
   .agents/skills/document-record-authoring
 ```
 
-Use placeholder repository URLs such as `https://github.com/YOUR-ORG/YOUR-REPO.git`.
+Use placeholder repository URLs such as `https://github.com/TakashiSasaki/skill.moukaeritai.work.git`.
 
 ### 3.2 LICENSE
 
@@ -441,7 +441,7 @@ Canonical schema files belong under `specs/`. Bundled schema snapshots belong un
 
 ### 4.6 Use placeholder URIs consistently
 
-Use `https://example.org/` and `https://github.com/YOUR-ORG/YOUR-REPO.git` as placeholders. Do not invent real ownership.
+Use `https://example.org/` and `https://github.com/TakashiSasaki/skill.moukaeritai.work.git` as placeholders. Do not invent real ownership.
 
 ## 5. Acceptance criteria
 

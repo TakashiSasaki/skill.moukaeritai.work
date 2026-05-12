@@ -40,7 +40,10 @@ def check_bundle(yaml_path):
     for line in content.splitlines():
         if line.strip().startswith("- from:"):
             path = line.split("from:")[1].strip()
-            if not os.path.exists(path):
+            if os.path.isabs(path) or ".." in path:
+                print(f"FAIL: {yaml_path} includes unsafe source path: {path}")
+                errors += 1
+            elif not os.path.exists(path):
                 print(f"FAIL: {yaml_path} includes non-existent path: {path}")
                 errors += 1
         if line.strip().startswith("to:"):
@@ -48,6 +51,27 @@ def check_bundle(yaml_path):
             if os.path.isabs(path) or ".." in path:
                 print(f"FAIL: {yaml_path} includes unsafe target path: {path}")
                 errors += 1
+        if line.strip().startswith("mode:"):
+            mode = line.split("mode:")[1].strip()
+            if mode != "copy":
+                print(f"FAIL: {yaml_path} unsupported mode: {mode}")
+                errors += 1
+
+    if "generate:" in content:
+        has_lockfile = False
+        for line in content.splitlines():
+            if line.strip().startswith("lockFile:"):
+                lock_file = line.split("lockFile:")[1].strip()
+                has_lockfile = True
+                if not lock_file.endswith("bundle-lock.json"):
+                    print(f"FAIL: {yaml_path} generate.lockFile must end with bundle-lock.json")
+                    errors += 1
+        if not has_lockfile:
+            print(f"FAIL: {yaml_path} missing generate.lockFile")
+            errors += 1
+    else:
+        print(f"FAIL: {yaml_path} missing generate block")
+        errors += 1
 
     if errors == 0:
         print(f"PASS: {yaml_path} is valid")

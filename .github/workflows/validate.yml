@@ -26,3 +26,13 @@ jobs:
 
       - name: Build bundles
         run: python tools/bundle/build_bundles.py --all --out .bundle-out
+
+      - name: Verify bundle generation
+        run: |
+          for file in SKILL.md README.md references/bundle-lock.json references/specs/json-schema/document-record.schema.json references/catalog.snapshot.jsonld scripts/validate_all.py; do
+            if [ ! -f ".bundle-out/document-record-authoring/$file" ]; then
+              echo "FAIL: Missing generated file $file"
+              exit 1
+            fi
+          done
+          echo "PASS: All generated bundle files present."

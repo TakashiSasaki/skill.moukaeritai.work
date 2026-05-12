@@ -677,7 +677,7 @@ generate.readme
     "outputBranch": "dist/skills/json-authoring"
   },
   "source": {
-    "repository": "https://github.com/YOUR-ORG/schema-repo",
+    "repository": "https://github.com/TakashiSasaki/skill.moukaeritai.work.git",
     "branch": "main",
     "commit": "0123456789abcdef0123456789abcdef01234567",
     "bundleDefinition": "bundles/skills/json-authoring.yaml"
@@ -865,7 +865,7 @@ fi
 
 ```bash
 git submodule add -b dist/skills/json-authoring \
-  https://github.com/YOUR-ORG/schema-repo.git \
+  https://github.com/TakashiSasaki/skill.moukaeritai.work.git \
   .agents/skills/json-authoring
 ```
 
