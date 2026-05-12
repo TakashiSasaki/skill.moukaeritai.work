@@ -6,7 +6,7 @@ This repository is the canonical source for schemas, vocabularies, validation to
 
 - `main` is the only editable canonical branch. All canonical schemas, vocabularies, tools, and bundle definitions reside here.
 - Distribution branches use the `dist/` prefix (e.g., `dist/skills/document-record-authoring`).
-- Distribution branches are generated automatically by CI. Do not edit them manually.
+- Distribution branches are generated from `main`. They are not canonical sources. In this small-team repository, direct commits to `dist/*` branches are allowed only as temporary field patches. Such commits must be backported to `main` or explicitly discarded. The publisher detects pending field patches and will not silently overwrite them.
 - Distribution branches are intended to be orphan branches, decoupled from the history of `main` to provide clean history for consumers.
 
 ## Usage
