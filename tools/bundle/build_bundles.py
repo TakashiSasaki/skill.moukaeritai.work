@@ -176,8 +176,15 @@ def build_bundle(yaml_path, out_dir):
 
 > [!WARNING]
 > This is a generated distribution branch.
-> Do not edit it directly.
-> Canonical sources are maintained on `main`.
+> This branch is generated from `main` and is not the canonical source.
+>
+> Small-team field patches may be committed directly to this branch for debugging or minor improvements. Such changes are temporary and must be backported to `main` or explicitly discarded. The bundle publisher detects commits after the last generated commit and aborts normal publication to avoid silently overwriting field patches.
+>
+> Optional commit message trailer:
+>
+> Backport-to-main: required
+>
+> This trailer is helpful but not required. Field patches are detected even without it.
 
 ## Provenance
 

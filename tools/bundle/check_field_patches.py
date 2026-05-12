@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""
+Script to check if there are pending field patches on distribution branches.
+Returns non-zero exit code if patches are found.
+
+Usage:
+  python tools/bundle/check_field_patches.py --all-dist-branches
+
+Exit codes:
+0: no pending field patches
+1: pending field patches found
+2: script error or unsafe branch state
+"""
+import sys
+import subprocess
+import argparse
+
+def run_cmd(cmd, check=True, capture_output=False):
+    if capture_output:
+        result = subprocess.run(cmd, check=check, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        return result.stdout.strip()
+    subprocess.run(cmd, check=check)
+
+def check_branch_for_patches(branch):
+    """Returns True if patches are found or branch is suspicious, False otherwise."""
+    try:
+        # Fetch branch
+        run_cmd(["git", "fetch", "origin", branch], check=False, capture_output=True)
+
+        commits_output = run_cmd(["git", "log", "--format=%H|%s", f"origin/{branch}"], check=False, capture_output=True)
+        if not commits_output:
+            return False # no commits
+
+        commits = commits_output.strip().split('\n')
+        last_gen_commit_hash = None
+        for line in commits:
+            if not line: continue
+            commit_hash = line.split('|')[0]
+            msg_body = run_cmd(["git", "log", "-1", "--format=%b", commit_hash], check=False, capture_output=True)
+            if "Generated-by: skill-bundle-publisher" in msg_body:
+                last_gen_commit_hash = commit_hash
+                break
+
+        if not last_gen_commit_hash:
+             print(f"ERROR: Branch {branch} exists but no generated commit marker found. Treated as suspicious.")
+             return True
+
+        # Get pending commits
+        pending_commits_output = run_cmd(["git", "log", "--format=%h", f"{last_gen_commit_hash}..origin/{branch}"], check=False, capture_output=True)
+        pending_commits = [line for line in pending_commits_output.strip().split('\n') if line]
+
+        if pending_commits:
+            print(f"Found {len(pending_commits)} pending field patches on {branch}.")
+            return True
+
+        return False
+
+    except Exception as e:
+         print(f"Error processing branch {branch}: {e}")
+         return True # fail safe
+
+def main():
+    parser = argparse.ArgumentParser(description="Check for pending field patches on distribution branches.")
+    parser.add_argument("--all-dist-branches", action="store_true", required=True, help="Check all dist/* branches")
+
+    args = parser.parse_args()
+
+    print("Fetching remote branches...")
+    try:
+        run_cmd(["git", "fetch", "origin"], check=False, capture_output=True)
+        branches_output = run_cmd(["git", "ls-remote", "--heads", "origin", "refs/heads/dist/*"], check=False, capture_output=True)
+
+        branches = []
+        for line in branches_output.strip().split('\n'):
+             if line:
+                 parts = line.split('\t')
+                 if len(parts) == 2:
+                      ref = parts[1]
+                      if ref.startswith("refs/heads/"):
+                          branches.append(ref[len("refs/heads/"):])
+
+        if not branches:
+             print("No dist/* branches found on remote origin. No field patches pending.")
+             sys.exit(0)
+
+        has_patches = False
+        for b in branches:
+             if check_branch_for_patches(b):
+                 has_patches = True
+
+        if has_patches:
+             print("\nPending field patches were found. They must be backported or discarded.")
+             sys.exit(1)
+        else:
+             print("\nNo pending field patches found.")
+             sys.exit(0)
+
+    except Exception as e:
+        print(f"Script error: {e}")
+        sys.exit(2)
+
+if __name__ == "__main__":
+    main()
