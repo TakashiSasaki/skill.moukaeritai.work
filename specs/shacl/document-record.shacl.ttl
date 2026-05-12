@@ -1,0 +1,29 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix core: <https://example.org/vocab/core#> .
+@prefix exsh: <https://example.org/schema/shacl/document-record#> .
+
+exsh:DocumentRecordShape a sh:NodeShape ;
+    sh:targetClass core:DocumentRecord ;
+    sh:property [
+        sh:path core:id ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path core:title ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path core:createdAt ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path core:tag ;
+        sh:datatype xsd:string ;
+    ] .

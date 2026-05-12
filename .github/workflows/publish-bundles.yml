@@ -1,0 +1,39 @@
+name: Publish Bundles
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run validation
+        run: python tools/validate_all.py
+
+      - name: Validate bundle definitions
+        run: python tools/bundle/validate_bundle_definitions.py bundles/
+
+      - name: Build bundles
+        run: python tools/bundle/build_bundles.py --all --out .bundle-out
+
+      - name: Publish bundle branches
+        run: |
+          # Note: Real publishing to dist/* orphan branches should be enabled
+          # after repository permissions and branch protections are configured.
+          # python tools/bundle/publish_bundle_branches.py --push
+          python tools/bundle/publish_bundle_branches.py

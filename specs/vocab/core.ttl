@@ -1,0 +1,27 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix core: <https://example.org/vocab/core#> .
+
+core:DocumentRecord a rdfs:Class ;
+    rdfs:label "Document Record" ;
+    rdfs:comment "A record representing a document." .
+
+core:id a rdfs:Property ;
+    rdfs:label "id" ;
+    rdfs:domain core:DocumentRecord ;
+    rdfs:range xsd:string .
+
+core:title a rdfs:Property ;
+    rdfs:label "title" ;
+    rdfs:domain core:DocumentRecord ;
+    rdfs:range xsd:string .
+
+core:createdAt a rdfs:Property ;
+    rdfs:label "createdAt" ;
+    rdfs:domain core:DocumentRecord ;
+    rdfs:range xsd:dateTime .
+
+core:tag a rdfs:Property ;
+    rdfs:label "tag" ;
+    rdfs:domain core:DocumentRecord ;
+    rdfs:range xsd:string .

@@ -1,0 +1,66 @@
+{
+  "@context": {
+    "@vocab": "https://example.org/vocab/catalog#"
+  },
+  "@id": "https://example.org/catalog/core",
+  "@type": "Catalog",
+  "name": "Core Catalog",
+  "entries": [
+    {
+      "@id": "https://example.org/schema/json/document-record.schema.json",
+      "@type": "Schema",
+      "kind": "json-schema",
+      "name": "DocumentRecord JSON Schema",
+      "path": "specs/json-schema/document-record.schema.json",
+      "version": "1.0.0"
+    },
+    {
+      "@id": "https://example.org/vocab/core#",
+      "@type": "Vocabulary",
+      "kind": "rdf-vocabulary",
+      "name": "Core Vocabulary",
+      "path": "specs/vocab/core.ttl",
+      "version": "1.0.0"
+    },
+    {
+      "@id": "https://example.org/schema/shacl/document-record",
+      "@type": "Schema",
+      "kind": "shacl",
+      "name": "DocumentRecord SHACL Shapes",
+      "path": "specs/shacl/document-record.shacl.ttl",
+      "version": "1.0.0"
+    },
+    {
+      "@id": "https://example.org/schema/sql/document-record",
+      "@type": "Schema",
+      "kind": "sql",
+      "name": "DocumentRecord SQL DDL",
+      "path": "specs/sql/document-record.sqlite.sql",
+      "version": "1.0.0"
+    },
+    {
+      "@id": "https://example.org/context/document-record",
+      "@type": "Mapping",
+      "kind": "jsonld-context",
+      "name": "DocumentRecord JSON-LD Context",
+      "path": "specs/mappings/jsonld/document-record.context.jsonld",
+      "version": "1.0.0"
+    },
+    {
+      "@id": "https://example.org/skill/document-record-authoring",
+      "@type": "Skill",
+      "kind": "coding-agent-skill",
+      "name": "DocumentRecord Authoring Skill",
+      "path": "skills/document-record-authoring/SKILL.md",
+      "version": "1.0.0"
+    },
+    {
+      "@id": "https://example.org/bundle/document-record-authoring",
+      "@type": "BundleDefinition",
+      "kind": "bundle",
+      "name": "DocumentRecord Authoring Bundle",
+      "path": "bundles/skills/document-record-authoring.yaml",
+      "version": "1.0.0"
+    }
+  ]
+}
