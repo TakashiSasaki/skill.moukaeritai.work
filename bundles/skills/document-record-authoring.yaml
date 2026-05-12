@@ -1,0 +1,41 @@
+schemaVersion: 1
+
+bundle:
+  name: document-record-authoring
+  kind: skill
+  source: skills/document-record-authoring
+  outputBranch: dist/skills/document-record-authoring
+
+include:
+  - from: skills/document-record-authoring/
+    to: ./
+    mode: copy
+  - from: specs/json-schema/document-record.schema.json
+    to: references/specs/json-schema/document-record.schema.json
+    mode: copy
+  - from: specs/vocab/core.ttl
+    to: references/specs/vocab/core.ttl
+    mode: copy
+  - from: specs/shacl/document-record.shacl.ttl
+    to: references/specs/shacl/document-record.shacl.ttl
+    mode: copy
+  - from: specs/mappings/jsonld/document-record.context.jsonld
+    to: references/specs/mappings/jsonld/document-record.context.jsonld
+    mode: copy
+  - from: catalog/catalog.jsonld
+    to: references/catalog.snapshot.jsonld
+    mode: copy
+  - from: tools/validate_all.py
+    to: scripts/validate_all.py
+    mode: copy
+
+generate:
+  lockFile: references/bundle-lock.json
+  readme: README.md
+
+validation:
+  requireFiles:
+    - SKILL.md
+    - references/bundle-lock.json
+    - references/specs/json-schema/document-record.schema.json
+  checkNoSymlinks: true

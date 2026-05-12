@@ -1,0 +1,28 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run validation
+        run: python tools/validate_all.py
+
+      - name: Validate bundle definitions
+        run: python tools/bundle/validate_bundle_definitions.py bundles/
+
+      - name: Build bundles
+        run: python tools/bundle/build_bundles.py --all --out .bundle-out
