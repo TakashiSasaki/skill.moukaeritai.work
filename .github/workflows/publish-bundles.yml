@@ -35,5 +35,5 @@ jobs:
         run: |
           # Note: Real publishing to dist/* orphan branches should be enabled
           # after repository permissions and branch protections are configured.
-          # python tools/bundle/publish_bundle_branches.py --push
-          python tools/bundle/publish_bundle_branches.py
+          # python tools/bundle/publish_bundle_branches.py --bundles-out .bundle-out --push
+          python tools/bundle/publish_bundle_branches.py --bundles-out .bundle-out

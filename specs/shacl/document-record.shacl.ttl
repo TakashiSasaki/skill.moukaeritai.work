@@ -8,12 +8,14 @@ exsh:DocumentRecordShape a sh:NodeShape ;
     sh:property [
         sh:path core:id ;
         sh:datatype xsd:string ;
+        sh:minLength 1 ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
     ] ;
     sh:property [
         sh:path core:title ;
         sh:datatype xsd:string ;
+        sh:minLength 1 ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
     ] ;
@@ -26,4 +28,5 @@ exsh:DocumentRecordShape a sh:NodeShape ;
     sh:property [
         sh:path core:tag ;
         sh:datatype xsd:string ;
+        sh:minLength 1 ;
     ] .
