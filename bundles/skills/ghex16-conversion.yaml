@@ -1,0 +1,42 @@
+schemaVersion: 1
+
+bundle:
+  name: ghex16-conversion
+  kind: skill
+  source: skills/ghex16-conversion
+  outputBranch: dist/skills/ghex16-conversion
+  description: >
+    Skill bundle for encoding and decoding GHex16 strings using Python scripts.
+
+version:
+  deriveFrom: repository
+  compatibleSchemaVersions:
+    - "1.x"
+
+include:
+  - from: skills/ghex16-conversion/
+    to: ./
+    mode: copy
+
+  - from: specs/encodings/ghex16-alphabetic-hex-encoding.md
+    to: references/specs/encodings/ghex16-alphabetic-hex-encoding.md
+    mode: copy
+
+exclude:
+  - "**/__pycache__/**"
+  - "**/.pytest_cache/**"
+  - "**/*.tmp"
+
+generate:
+  lockFile: references/bundle-lock.json
+  readme: README.md
+
+validation:
+  requireFiles:
+    - SKILL.md
+    - references/bundle-lock.json
+    - scripts/ghex16.py
+  run:
+    - python scripts/ghex16.py encode-hex 0F1A9C
+  checkNoBrokenRelativeLinks: true
+  checkNoSymlinks: true
