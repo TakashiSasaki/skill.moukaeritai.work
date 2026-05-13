@@ -21,7 +21,7 @@ GHex16 is designed to satisfy the following requirements.
 
 First, every hexadecimal digit is encoded as exactly one character. Therefore, the encoded string has the same length as the source hexadecimal string.
 
-Second, the encoded form uses uppercase ASCII letters only. This makes the representation suitable for many identifier syntaxes that disallow leading digits.
+Second, the encoded form can use either uppercase or lowercase ASCII letters, but it defaults to lowercase unless otherwise specified. This makes the representation suitable for many identifier syntaxes that disallow leading digits.
 
 Third, the alphabet avoids visually or semantically undesirable characters. In particular, it excludes I, L, O, and U.
 
@@ -41,13 +41,14 @@ GHex16 is not intended to be parsed as ordinary hexadecimal. Characters such as 
 
 4. Alphabet
 
-The GHex16 alphabet consists of the following 16 uppercase ASCII letters:
+The GHex16 alphabet consists of the following 16 ASCII letters (defaulting to lowercase):
 
-G H J K M N P Q R S T V W X Y Z
+g h j k m n p q r s t v w x y z
+(or their uppercase equivalents: G H J K M N P Q R S T V W X Y Z)
 
 As a contiguous string:
 
-GHJKMNPQRSTVWXYZ
+ghjkmnpqrstvwxyz (or GHJKMNPQRSTVWXYZ)
 
 The alphabet deliberately excludes:
 
@@ -114,9 +115,9 @@ Z	15	F
 
 A canonical GHex16 string MUST contain only characters from the alphabet:
 
-GHJKMNPQRSTVWXYZ
+ghjkmnpqrstvwxyz (or GHJKMNPQRSTVWXYZ)
 
-A canonical GHex16 string MUST NOT contain lowercase letters.
+A canonical GHex16 string SHOULD default to lowercase letters, but MAY contain uppercase letters. It MUST NOT mix uppercase and lowercase letters within the same encoded string.
 
 A canonical GHex16 string MUST NOT contain whitespace, separators, prefixes, suffixes, hyphens, underscores, or grouping marks.
 
@@ -128,26 +129,28 @@ Characters outside the GHex16 alphabet are invalid in strict decoding.
 
 Given a hexadecimal string H, the encoder processes each hexadecimal digit independently.
 
-For each character:
+For each character (assuming the default lowercase output):
 
-0 is replaced with G;
-1 is replaced with H;
-2 is replaced with J;
-3 is replaced with K;
-4 is replaced with M;
-5 is replaced with N;
-6 is replaced with P;
-7 is replaced with Q;
-8 is replaced with R;
-9 is replaced with S;
-A is replaced with T;
-B is replaced with V;
-C is replaced with W;
-D is replaced with X;
-E is replaced with Y;
-F is replaced with Z.
+0 is replaced with g;
+1 is replaced with h;
+2 is replaced with j;
+3 is replaced with k;
+4 is replaced with m;
+5 is replaced with n;
+6 is replaced with p;
+7 is replaced with q;
+8 is replaced with r;
+9 is replaced with s;
+A is replaced with t;
+B is replaced with v;
+C is replaced with w;
+D is replaced with x;
+E is replaced with y;
+F is replaced with z.
 
-Input hexadecimal letters SHOULD be normalized to uppercase before encoding. A strict encoder MAY reject lowercase hexadecimal input instead.
+If uppercase output is specified, the uppercase equivalents (G, H, J, etc.) are used instead.
+
+Input hexadecimal letters SHOULD be normalized to uppercase or lowercase before encoding.
 
 The output length is exactly equal to the input length.
 
@@ -155,38 +158,36 @@ The output length is exactly equal to the input length.
 
 Given a GHex16 string G, the decoder processes each character independently.
 
-For each character:
+For each character (case-insensitive):
 
-G is replaced with 0;
-H is replaced with 1;
-J is replaced with 2;
-K is replaced with 3;
-M is replaced with 4;
-N is replaced with 5;
-P is replaced with 6;
-Q is replaced with 7;
-R is replaced with 8;
-S is replaced with 9;
-T is replaced with A;
-V is replaced with B;
-W is replaced with C;
-X is replaced with D;
-Y is replaced with E;
-Z is replaced with F.
+g or G is replaced with 0;
+h or H is replaced with 1;
+j or J is replaced with 2;
+k or K is replaced with 3;
+m or M is replaced with 4;
+n or N is replaced with 5;
+p or P is replaced with 6;
+q or Q is replaced with 7;
+r or R is replaced with 8;
+s or S is replaced with 9;
+t or T is replaced with A;
+v or V is replaced with B;
+w or W is replaced with C;
+x or X is replaced with D;
+y or Y is replaced with E;
+z or Z is replaced with F.
 
 A strict decoder MUST reject every character outside the GHex16 alphabet.
-
-A permissive decoder MAY accept lowercase ghjkmnpqrstvwxyz by first converting the input to uppercase. However, such lowercase input is not canonical.
 
 10. Byte encoding
 
 GHex16 itself is defined as a transformation of hexadecimal digits. To encode bytes, first represent the byte sequence as hexadecimal using two hexadecimal digits per byte, with the high nibble first and the low nibble second. Then encode each hexadecimal digit using the GHex16 mapping.
 
-For example, the byte 0xAF is first written as hexadecimal AF, then encoded as TZ.
+For example, the byte 0xAF is first written as hexadecimal AF, then encoded as tz.
 
-The byte 0x00 is encoded as GG.
+The byte 0x00 is encoded as gg.
 
-The byte 0xFF is encoded as ZZ.
+The byte 0xFF is encoded as zz.
 
 11. Ordering property
 
@@ -198,11 +199,12 @@ For example, ordinary fixed-width hexadecimal order:
 
 is transformed into:
 
-GG < GH < GS < GT < GZ < HG
+gg < gh < gs < gt < gz < hg
 
 This works because the GHex16 alphabet is monotonically ordered by ASCII / Unicode code point value:
 
-G < H < J < K < M < N < P < Q < R < S < T < V < W < X < Y < Z
+g < h < j < k < m < n < p < q < r < s < t < v < w < x < y < z
+(and similarly for uppercase)
 
 and because each source digit is mapped to the corresponding target character in numeric order.
 
@@ -214,24 +216,24 @@ F < 10 numerically is false; actually 0xF < 0x10.
 
 Their GHex16 encodings are:
 
-Z and HG.
+z and hg.
 
-Lexicographically, HG < Z, which is consistent only if the values are represented at fixed width, for example:
+Lexicographically, hg < z, which is consistent only if the values are represented at fixed width, for example:
 
-0F -> GZ
-10 -> HG
+0F -> gz
+10 -> hg
 
 and then:
 
-GZ < HG
+gz < hg
 
 Therefore, fixed-width representation is REQUIRED when GHex16 strings are sorted lexicographically as numeric identifiers.
 
 12. Identifier suitability
 
-A GHex16 string consists only of uppercase ASCII letters. It can therefore be embedded directly in many identifier-like syntaxes that require the first character to be alphabetic.
+A GHex16 string consists only of ASCII letters (defaulting to lowercase). It can therefore be embedded directly in many identifier-like syntaxes that require the first character to be alphabetic.
 
-Because the first encoded digit is always one of G H J K M N P Q R S T V W X Y Z, a GHex16-encoded value never begins with a digit.
+Because the first encoded digit is always one of g h j k m n p q r s t v w x y z (or their uppercase equivalents), a GHex16-encoded value never begins with a digit.
 
 This is useful when encoding hexadecimal-like identifiers for environments such as programming-language identifiers, conservative XML local names, RDF local names, database symbolic keys, filesystem-safe names, or URL path components.
 
@@ -241,7 +243,7 @@ The embedding specification remains responsible for determining whether addition
 
 Applications relying on the ordering property MUST compare GHex16 strings using binary code point ordering, ASCII ordering, or another collation that preserves the order:
 
-G < H < J < K < M < N < P < Q < R < S < T < V < W < X < Y < Z
+g < h < j < k < m < n < p < q < r < s < t < v < w < x < y < z
 
 Applications MUST NOT assume that locale-sensitive, case-insensitive, natural-sort, or dictionary-style collation preserves the numeric ordering property.
 
@@ -251,10 +253,9 @@ When storing GHex16 identifiers in databases, a binary collation is preferred if
 
 A strict GHex16 decoder MUST reject the following:
 
-ordinary hexadecimal letters A B C D E F;
+ordinary hexadecimal letters (A-F, a-f);
 digits 0 1 2 3 4 5 6 7 8 9;
-excluded letters I L O U;
-lowercase letters, unless a permissive profile is explicitly used;
+excluded letters (I, L, O, U, i, l, o, u);
 whitespace;
 punctuation;
 fullwidth Unicode variants;
@@ -269,18 +270,18 @@ Applications MAY define an external presentation format with grouping separators
 Source hex	GHex16
 
 empty string	empty string
-0	G
-1	H
-9	S
-A	T
-F	Z
-00	GG
-0F	GZ
-10	HG
-FF	ZZ
-0123456789ABCDEF	GHJKMNPQRSTVWXYZ
-0F1A9C	GZHTSW
-DEADBEEF	XYTXVYYZ
+0	g
+1	h
+9	s
+A	t
+F	z
+00	gg
+0F	gz
+10	hg
+FF	zz
+0123456789ABCDEF	ghjkmnpqrstvwxyz
+0F1A9C	gzhtsw
+DEADBEEF	xytxvyyz
 
 
 16. Rationale
@@ -291,7 +292,7 @@ Hexadecimal notation is widely used because each digit corresponds exactly to on
 
 However, ordinary hexadecimal notation uses digits 0 through 9. This is inconvenient in syntactic contexts where identifiers cannot begin with digits. A hexadecimal value such as 0F1A9C may be semantically suitable as an identifier but syntactically invalid or awkward in systems requiring an alphabetic initial character.
 
-GHex16 preserves the nibble-wise structure of hexadecimal while replacing all digits with uppercase letters.
+GHex16 preserves the nibble-wise structure of hexadecimal while replacing all digits with ASCII letters (defaulting to lowercase).
 
 16.2 Why not simply prefix ordinary hex?
 
@@ -320,7 +321,7 @@ If GHex16 used A as the encoding of zero, then the encoded alphabet might look l
 For example:
 
 ordinary hex: 0F1A9C
-GHex16: GZHTSW
+GHex16: gzhtsw
 
 The GHex16 form is not easily mistaken for standard hexadecimal.
 
@@ -342,11 +343,9 @@ By excluding U, while also excluding A, E, I, and O, the alphabet avoids ordinar
 
 The resulting alphabet is still large enough to encode all 16 nibble values while preserving lexicographic order.
 
-16.7 Why uppercase only?
+16.7 Why default to lowercase?
 
-Uppercase ASCII letters are widely accepted in identifiers and are visually stable across many systems. Restricting the canonical form to uppercase also avoids ambiguity between uppercase and lowercase variants.
-
-Allowing lowercase as a permissive input form is possible, but lowercase output is not canonical.
+Lowercase ASCII letters are widely accepted in identifiers and often visually preferred in modern systems (e.g. URLs, JSON keys). GHex16 supports both, but defaults to lowercase unless specified otherwise.
 
 16.8 Why one character per nibble?
 
@@ -372,29 +371,29 @@ Alternative method-style names:
 to_ghex16
 from_ghex16
 
-Suggested regular expression for canonical GHex16:
+Suggested regular expression for canonical GHex16 (lowercase):
 
-^[GHJKMNPQRSTVWXYZ]*$
+^[ghjkmnpqrstvwxyz]*$
 
-Suggested regular expression for non-empty canonical GHex16:
+Suggested regular expression for non-empty canonical GHex16 (lowercase):
 
-^[GHJKMNPQRSTVWXYZ]+$
+^[ghjkmnpqrstvwxyz]+$
 
 18. Summary definition
 
-GHex16 is a digit-free, uppercase, nibble-wise encoding of hexadecimal values using the alphabet:
+GHex16 is a digit-free, nibble-wise encoding of hexadecimal values using the alphabet:
 
-GHJKMNPQRSTVWXYZ
+ghjkmnpqrstvwxyz (or GHJKMNPQRSTVWXYZ)
 
 Its canonical digit mapping is:
 
 0123456789ABCDEF
 →
-GHJKMNPQRSTVWXYZ
+ghjkmnpqrstvwxyz
 
 Its primary properties are:
 
-it uses only uppercase ASCII letters;
+it uses only ASCII letters, defaulting to lowercase;
 it never begins with a digit;
 it excludes I, L, O, and U;
 it avoids A through F to distinguish itself from ordinary hexadecimal;
