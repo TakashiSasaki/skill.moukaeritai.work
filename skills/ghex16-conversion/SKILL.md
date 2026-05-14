@@ -30,6 +30,10 @@ python scripts/ghex16.py encode-hex 0F1A9C --upper
 python scripts/ghex16.py decode-hex gzhtsw
 # Result: 0f1a9c
 
+# Decode a mixed-case GHex16 string to hex
+python scripts/ghex16.py decode-hex gZhT --allow-mixed-case
+# Result: 0f1a
+
 # Encode an integer
 python scripts/ghex16.py encode-int 255
 # Result: zz
@@ -47,6 +51,7 @@ import ghex16
 ghex16.encode_hex_to_ghex16("0F1A9C")      # returns "gzhtsw"
 ghex16.encode_hex_to_ghex16("0F", uppercase=True) # returns "GZ"
 ghex16.decode_ghex16_to_hex("gzhtsw")      # returns "0f1a9c"
+ghex16.decode_ghex16_to_hex("gZhT", allow_mixed_case=True) # returns "0f1a"
 
 ghex16.encode_int_to_ghex16(255)           # returns "zz"
 ghex16.decode_ghex16_to_int("zz")          # returns 255
@@ -54,6 +59,6 @@ ghex16.decode_ghex16_to_int("zz")          # returns 255
 
 ## Common Mistakes
 
-* Mixing uppercase and lowercase characters in the same GHex16 string. A canonical string must be exclusively uppercase or exclusively lowercase.
+* Mixing uppercase and lowercase characters in the same GHex16 string. A canonical string must be exclusively uppercase or exclusively lowercase, unless `--allow-mixed-case` (CLI) or `allow_mixed_case=True` (Python) is explicitly used to relax this requirement.
 * Expecting variable-length GHex16 strings to preserve numeric sorting. Numeric sorting is only preserved for fixed-width inputs.
 * Treating ordinary letters `a-f` or `A-F` as valid GHex16 inputs when decoding. GHex16 uses `g-z` only.

@@ -56,8 +56,12 @@ def encode_hex_to_ghex16(hex_str: str, uppercase: bool = False) -> str:
         raise ValueError(f"Invalid hexadecimal character: {e.args[0]}")
 
 
-def decode_ghex16_to_hex(ghex16_str: str) -> str:
+def decode_ghex16_to_hex(ghex16_str: str, allow_mixed_case: bool = False) -> str:
     """Decode a GHex16 string to a hexadecimal string (lowercase)."""
+    if not allow_mixed_case:
+        if ghex16_str != ghex16_str.lower() and ghex16_str != ghex16_str.upper():
+            raise ValueError("GHex16 string must not mix uppercase and lowercase characters unless allow_mixed_case is True")
+
     try:
         return "".join(DECODE_MAP[c] for c in ghex16_str)
     except KeyError as e:
@@ -73,11 +77,11 @@ def encode_int_to_ghex16(value: int, uppercase: bool = False) -> str:
     return encode_hex_to_ghex16(hex_str, uppercase=uppercase)
 
 
-def decode_ghex16_to_int(ghex16_str: str) -> int:
+def decode_ghex16_to_int(ghex16_str: str, allow_mixed_case: bool = False) -> int:
     """Decode a GHex16 string to an integer."""
     if not ghex16_str:
         raise ValueError("Cannot decode empty string to an integer")
-    hex_str = decode_ghex16_to_hex(ghex16_str)
+    hex_str = decode_ghex16_to_hex(ghex16_str, allow_mixed_case=allow_mixed_case)
     return int(hex_str, 16)
 
 
@@ -100,10 +104,12 @@ def main():
     # Decode to hex command
     parser_decode_hex = subparsers.add_parser("decode-hex", help="Decode GHex16 to hexadecimal string")
     parser_decode_hex.add_argument("value", help="The GHex16 string to decode")
+    parser_decode_hex.add_argument("--allow-mixed-case", action="store_true", help="Allow mixing uppercase and lowercase in the input")
 
     # Decode to int command
     parser_decode_int = subparsers.add_parser("decode-int", help="Decode GHex16 to integer")
     parser_decode_int.add_argument("value", help="The GHex16 string to decode")
+    parser_decode_int.add_argument("--allow-mixed-case", action="store_true", help="Allow mixing uppercase and lowercase in the input")
 
     args = parser.parse_args()
 
@@ -113,9 +119,9 @@ def main():
         elif args.command == "encode-int":
             result = encode_int_to_ghex16(args.value, uppercase=args.upper)
         elif args.command == "decode-hex":
-            result = decode_ghex16_to_hex(args.value)
+            result = decode_ghex16_to_hex(args.value, allow_mixed_case=args.allow_mixed_case)
         elif args.command == "decode-int":
-            result = decode_ghex16_to_int(args.value)
+            result = decode_ghex16_to_int(args.value, allow_mixed_case=args.allow_mixed_case)
         else:
             parser.print_help()
             sys.exit(1)
