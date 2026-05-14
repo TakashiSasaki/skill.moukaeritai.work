@@ -62,11 +62,21 @@ def get_file_hash(filepath):
             hasher.update(chunk)
     return hasher.hexdigest()
 
+def is_safe_path(path):
+    if not path:
+        return True
+    if os.path.isabs(path) or ".." in path.split(os.path.sep) or ".." in path.split("/"):
+        return False
+    return True
+
 def build_bundle(yaml_path, out_dir):
     print(f"Building bundle from {yaml_path}...")
     bundle_data = parse_simple_yaml(yaml_path)
 
     bundle_name = bundle_data["bundle"].get("name", "unknown")
+    if not is_safe_path(bundle_name):
+        print(f"Error: Invalid bundle name: {bundle_name}")
+        sys.exit(1)
     target_dir = os.path.join(out_dir, bundle_name)
 
     if os.path.exists(target_dir):
@@ -137,6 +147,9 @@ def build_bundle(yaml_path, out_dir):
     # Generate lock file
     lock_file = bundle_data.get("generate", {}).get("lockFile")
     if lock_file:
+        if not is_safe_path(lock_file):
+            print(f"Error: Invalid lock file path: {lock_file}")
+            sys.exit(1)
         lock_path = os.path.normpath(os.path.join(target_dir, lock_file))
         os.makedirs(os.path.dirname(lock_path), exist_ok=True)
 
@@ -167,6 +180,9 @@ def build_bundle(yaml_path, out_dir):
     # Generate README
     readme_file = bundle_data.get("generate", {}).get("readme")
     if readme_file:
+        if not is_safe_path(readme_file):
+            print(f"Error: Invalid README file path: {readme_file}")
+            sys.exit(1)
         readme_path = os.path.normpath(os.path.join(target_dir, readme_file))
         os.makedirs(os.path.dirname(readme_path), exist_ok=True)
 
