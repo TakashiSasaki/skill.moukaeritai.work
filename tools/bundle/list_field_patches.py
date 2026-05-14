@@ -6,7 +6,6 @@ Usage:
   python tools/bundle/list_field_patches.py --branch <branch-name>
   python tools/bundle/list_field_patches.py --all-dist-branches
 """
-import sys
 import subprocess
 import json
 import argparse
